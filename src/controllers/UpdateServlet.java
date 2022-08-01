@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import models.Message;
+import models.Tasks;
 import utils.DBUtil;
 
 /**
@@ -35,22 +35,20 @@ public class UpdateServlet extends HttpServlet {
         if(_token != null && _token.equals(request.getSession().getId())) {
             EntityManager em = DBUtil.createEntityManager();
 
-            Message m = em.find(Message.class, (Integer)(request.getSession().getAttribute("message_id")));
+            Tasks m = em.find(Tasks.class, (Integer)(request.getSession().getAttribute("tasklist_id")));
 
-            String title = request.getParameter("title");
-            m.setTitle(title);
 
             String content = request.getParameter("content");
             m.setContent(content);
 
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-            m.setUpdated_at(currentTime);      
+            m.setUpdated_at(currentTime);
 
             em.getTransaction().begin();
             em.getTransaction().commit();
             em.close();
 
-            request.getSession().removeAttribute("message_id");
+            request.getSession().removeAttribute("tasklist_id");
 
             response.sendRedirect(request.getContextPath() + "/index");
         }
